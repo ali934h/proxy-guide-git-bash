@@ -1,3 +1,100 @@
+# Proxy Setup Guide for Git Bash (Windows)
+
+---
+
+## Prerequisites
+
+- **Git for Windows** installed (includes Git Bash)
+- A proxy client such as **Nekoray, V2Ray, Xray, or Clash**
+- Knowing your HTTP proxy port (usually `2080` or `2081`)
+
+---
+
+## Step 1 - Find Your Proxy Port
+
+In your proxy client (e.g. Nekoray), find the **HTTP** port:
+- There is usually a separate port for **SOCKS5** and **HTTP**
+- Note the HTTP port (e.g. `2081`)
+
+---
+
+## Step 2 - Open `.bashrc`
+
+In Git Bash run:
+
+```bash
+nano ~/.bashrc
+```
+
+---
+
+## Step 3 - Add Proxy Functions
+
+Go to the end of the file and paste this code (replace port with yours):
+
+```bash
+function proxy-on {
+    export HTTP_PROXY="http://127.0.0.1:2081"
+    export HTTPS_PROXY="http://127.0.0.1:2081"
+    echo "Proxy ON ✅"
+}
+
+function proxy-off {
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    echo "Proxy OFF ❌"
+}
+```
+
+**Save:** `Ctrl+O` → `Enter` → `Ctrl+X`
+
+---
+
+## Step 4 - Setup `.bash_profile`
+
+Run this command (only **once**):
+
+```bash
+echo 'source ~/.bashrc' >> ~/.bash_profile
+```
+
+> This makes Git Bash **automatically** load the functions every time it opens.
+
+---
+
+## Step 5 - Test
+
+**Close the terminal completely** and reopen it, then:
+
+```bash
+proxy-on
+curl https://api.ipify.org
+```
+
+If a **foreign IP** is shown, everything is working ✅
+
+---
+
+## Daily Usage
+
+```bash
+proxy-on          # Enable proxy
+git push          # or any other command
+wrangler deploy   # Cloudflare deploy
+proxy-off         # Disable proxy
+```
+
+---
+
+## Important Notes
+
+- `proxy-on` only applies to **that terminal window**
+- `ping` never goes through a proxy — use `curl` for testing
+- If your proxy client is off, `proxy-on` won't work
+
+---
+---
+
 # راهنمای تنظیم پراکسی در Git Bash (ویندوز)
 
 ---
