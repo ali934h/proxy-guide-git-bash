@@ -168,14 +168,28 @@ to a folder of your choice, for example `C:\Users\<you>\bin`.
 
 ### 2. Add that folder to your user PATH
 
-In an **admin-free** CMD window:
+> ⚠️ **Don't use `setx PATH "%PATH%;..."`.** It looks tempting but it's
+> dangerous: in CMD `%PATH%` expands to **system + user** PATH combined, so
+> you'd duplicate every system entry into your user PATH. Worse, `setx`
+> silently truncates values longer than 1024 characters, which permanently
+> corrupts your PATH on most dev machines.
 
-```cmd
-setx PATH "%PATH%;%USERPROFILE%\bin"
+Use this PowerShell one-liner instead — it appends only to the **user**
+PATH and leaves the system PATH untouched. Run it once in any PowerShell
+window (no admin needed):
+
+```powershell
+[Environment]::SetEnvironmentVariable(
+    'Path',
+    [Environment]::GetEnvironmentVariable('Path','User') + ";$HOME\bin",
+    'User'
+)
 ```
 
-> `setx` updates your **user** PATH permanently. Close and reopen CMD for
-> the change to take effect. (You only do this once.)
+Or do it through the GUI: **Win + R → `sysdm.cpl` → Advanced → Environment
+Variables → User variables → `Path` → New →** `%USERPROFILE%\bin` → OK.
+
+Close and reopen CMD for the change to take effect (you only do this once).
 
 ### 3. Use it
 
@@ -443,14 +457,27 @@ proxy-off
 
 ### ۲. اون پوشه رو به PATH کاربری اضافه کن
 
-در یه CMD معمولی (بدون ادمین):
+> ⚠️ **از `setx PATH "%PATH%;..."` استفاده نکن.** دو مشکل جدی داره:
+> ۱) در CMD، `%PATH%` ترکیبِ system+user رو برمی‌گردونه؛ نوشتنش روی PATH
+> کاربری باعث می‌شه همه ورودی‌های system در user تکراری بشن. ۲) `setx`
+> مقدارهای بزرگ‌تر از ۱۰۲۴ کاراکتر رو **بی‌سروصدا قطع می‌کنه** و در
+> ماشین‌های توسعه که PATH شلوغ داره، PATH رو دائمی خراب می‌کنه.
 
-```cmd
-setx PATH "%PATH%;%USERPROFILE%\bin"
+به‌جاش این یه‌خطی PowerShell رو **یک بار** بزن. فقط به PATH **کاربری**
+اضافه می‌کنه و سیستم رو دست نمی‌زنه (نیاز به ادمین هم نداره):
+
+```powershell
+[Environment]::SetEnvironmentVariable(
+    'Path',
+    [Environment]::GetEnvironmentVariable('Path','User') + ";$HOME\bin",
+    'User'
+)
 ```
 
-> `setx` پی‌اچ‌تی **کاربری** رو دائمی تغییر می‌ده. CMD رو ببند و باز کن
-> تا اعمال بشه.
+یا از طریق GUI: **Win + R → `sysdm.cpl` → Advanced → Environment
+Variables → User variables → `Path` → New →** `%USERPROFILE%\bin` → OK.
+
+بعدش CMD رو ببند و باز کن تا اعمال بشه (یک بار کافیه).
 
 ### ۳. استفاده
 
